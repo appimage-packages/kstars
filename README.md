@@ -1,0 +1,2 @@
+# kstars
+KStars appimage
