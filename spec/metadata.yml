@@ -1,0 +1,19 @@
+name: kstars
+packages:
+  - libindi-dev
+frameworks:
+  build_kf5: true
+  frameworks:
+type: git
+url: http://anongit.kde.org/kstars
+buildsystem: cmake
+buildoptions: "-DCMAKE_INSTALL_PREFIX=/app/usr -DBUILD_TESTING=OFF"
+dependencies:
+  - cpan:
+      build:
+        buildsystem: custom
+        buildoptions: cpan URI::Escape
+      depname: cpan
+      source:
+        type: none
+        url: ''
