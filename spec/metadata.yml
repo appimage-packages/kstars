@@ -76,6 +76,7 @@ packages:
   - libncurses5-dev
   - flex
   - bison
+  - libxslt1-dev
   #app specifc
   - libindi-dev
 frameworks:
