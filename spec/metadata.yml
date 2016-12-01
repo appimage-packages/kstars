@@ -4,6 +4,35 @@ packages:
 frameworks:
   build_kf5: true
   frameworks:
+    - extra-cmake-modules
+    - kcoreaddons
+    - ki18n
+    - kitemviews
+    - kconfig
+    - kauth
+    - kcodecs
+    - karchive
+    - kdoctools
+    - kguiaddons
+    - kwidgetsaddons
+    - kconfigwidgets
+    - kiconthemes
+    - kcompletion
+    - kwindowsystem
+    - kcrash
+    - kdbusaddons
+    - kservice
+    - sonnet
+    - ktextwidgets
+    - kglobalaccel
+    - kxmlgui
+    - solid
+    - kbookmarks
+    - kjobwidgets
+    - kio
+    - phonon
+    - knotifications
+    - kwallet
 type: git
 url: http://anongit.kde.org/kstars
 buildsystem: cmake
