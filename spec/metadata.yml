@@ -113,6 +113,8 @@ frameworks:
     - kwallet
     - kparts
     - kpty
+    - knewstuff
+    - kplotting
 type: git
 url: http://anongit.kde.org/kstars
 buildsystem: cmake
