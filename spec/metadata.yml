@@ -1,6 +1,6 @@
 name: kstars
 packages:
-    - build-essential
+  - build-essential
   - libgl1-mesa-dev
   - software-properties-common
   - libxcb-xfixes0-dev
