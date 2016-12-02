@@ -113,6 +113,7 @@ frameworks:
     - kwallet
     - kparts
     - kpty
+    - attica
     - knewstuff
     - kplotting
 type: git
