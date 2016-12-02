@@ -24,6 +24,7 @@ node('linux') {
 
 
     currentBuild.result = "SUCCESS"
+    properties([pipelineTriggers([[$class: 'GitHubPushTrigger'], pollSCM('H/15 * * * *')])])
 
     try {
 
