@@ -151,7 +151,7 @@ describe Recipe do
       p appfullname
       File.write('/in/Recipe', app.render)
       expect(app.generate_appimage()).to eq 0
-      expect(File.exist?("/appimage/#{appfullname}.to_s.gsub('\n', '')")).to be(true), "Something went wrong, no AppImage"
+      expect(Dir["/appimage/*"].empty?).to be(false), "No Appimage"
       `rm -rfv /app/*`
       `rm -f functions.sh`
       expect(Dir["/app/*"].empty?).to be(true), "Please clean up"
