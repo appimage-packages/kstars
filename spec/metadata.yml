@@ -111,6 +111,8 @@ frameworks:
     - phonon
     - knotifications
     - kwallet
+    - kparts
+    - kpty
 type: git
 url: http://anongit.kde.org/kstars
 buildsystem: cmake
