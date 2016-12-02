@@ -79,6 +79,7 @@ packages:
   - libxslt1-dev
   #app specifc
   - libindi-dev
+  - libeigen3-dev
 frameworks:
   build_kf5: true
   frameworks:
