@@ -56,6 +56,8 @@ wget "https://github.com/probonopd/AppImageKit/releases/download/continuous/appi
 chmod a+x appimagetool-x86_64.AppImage
 
 ARCH=$(arch)
-APPIMAGEFILENAME="<%= name %>-<%=version %>-$ARCH.AppImage"
+DATE=$(date +"%m%d%Y")
+
+APPIMAGEFILENAME="<%= name %>-git$DATE-$ARCH.AppImage"
 
 ./appimagetool-x86_64.AppImage /<%= name %>.AppDir /appimage/$APPIMAGEFILENAME
