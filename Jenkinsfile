@@ -24,7 +24,7 @@ node('linux') {
 
 
     currentBuild.result = "SUCCESS"
-    properties([pipelineTriggers([[$class: 'GitHubPushTrigger'], pollSCM('H/15 * * * *')])])
+    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '', numToKeepStr: '2')), pipelineTriggers([[$class: 'GitHubPushTrigger'], pollSCM('H/15 * * * *')])])
 
     try {
 
@@ -41,10 +41,13 @@ node('linux') {
         stage( 'Build' ) {
             sh 'bundle exec deploy.rb'
        }
-        stage('Copy Artifacts') {
-            step([$class: 'S3BucketPublisher', dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'ds9-apps', excludedFile: '', flatten: true, gzipFiles: false, keepForever: false, managedArtifacts: true, noUploadOnFailure: true, \
-            selectedRegion: 'eu-central-1', showDirectlyInBrowser: true, sourceFile: 'appimage/*', storageClass: 'STANDARD', uploadFromSlave: true, useServerSideEncryption: false]], profileName: 'ds9-apps', userMetadata: []])
+       stage('Copy Artifacts') {
+          step([$class: 'S3BucketPublisher', dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'ds9-apps', excludedFile: '', flatten: true, gzipFiles: false, keepForever: false, managedArtifacts: true, noUploadOnFailure: true, \
+          selectedRegion: 'eu-central-1', showDirectlyInBrowser: true, sourceFile: 'appimage/*', storageClass: 'STANDARD', uploadFromSlave: true, useServerSideEncryption: false]], profileName: 'ds9-apps', userMetadata: []])
        }
+       stage('Tests') {
+            step([$class: 'LogParserPublisher', failBuildOnError: true, projectRulePath: 'appimage-template/parser.rules', showGraphs: true, unstableOnWarning: true, useProjectRule: true])
+      }
    }
 
 

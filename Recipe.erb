@@ -31,11 +31,21 @@ wget https://github.com/probonopd/linuxdeployqt/releases/download/1/linuxdeployq
 chmod a+x linuxdeployqt-1-x86_64.AppImage
 
 cd /<%= name %>.AppDir
-mkdir -p ./usr/bin; mv /app/usr/bin/*<%= name %>* $_
+mkdir -p ./usr/bin; mv /app/usr/bin/* $_
+mkdir -p ./usr/lib; mv /app/usr/lib/* $_
 cp /app/usr/share/applications/*<%= name %>*.desktop <%= name %>.desktop
 mkdir -p ./usr/share/applications/; mv /app/usr/share/applications/*<%= name %>*.desktop $_
 cp /app/usr/share/icons/hicolor/scalable/apps/*<%= name %>* .
 mkdir -p ./usr/share/icons/hicolor/scalable/apps; mv /app/usr/share/icons/hicolor/scalable/apps/*<%= name %>* $_
+
+#KDE files
+mkdir -p ./usr/share/kservices5; mv /app/usr/share/kservices5/* $_
+mkdir -p ./usr/share/kservicetypes5; mv /app/usr/share/kservicetypes5/* $_
+mkdir -p ./usr/share/kxmlgui5; mv /app/usr/share/kxmlgui5/* $_
+mkdir -p ./usr/share/metainfo; mv  /app/usr/share/metainfo/* $_
+mkdir -p ./etc/xdg; mv /app/etc/xdg/* $_
+mkdir -p ./usr/share/config.kcfg; mv /app/usr/share/config.kcfg/* $_
+mkdir -p ./usr/share/mime/packages; mv /app/usr/share/mime/packages/* $_
 
 ../linuxdeployqt-1-x86_64.AppImage ./usr/bin/<%= name %> -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
 
