@@ -77,7 +77,7 @@ cp /app/usr/share/applications/*<%= name %>*.desktop <%= name %>.desktop
 cp /app/usr/share/icons/hicolor/scalable/apps/*<%= name %>* .
 
 #Move everything in AppDir
-mv /app/usr/* ./usr/
+mkdir ./usr; mv /app/usr/* $_
 
 ../linuxdeployqt-1-x86_64.AppImage ./usr/bin/<%= name %> -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
 
