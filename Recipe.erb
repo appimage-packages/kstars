@@ -27,18 +27,60 @@ rm -f functions.sh
 
 mkdir /<%= name %>.AppDir/
 
+cd /app/src
+git clone git://anongit.kde.org/scratch/brauch/appimage-exec-wrapper
+cd /app/src/appimage-exec-wrapper/
+make clean
+make
+cp -v exec.so /<%= name %>.AppDir/exec_wrapper.so
+
+cd /
 wget https://github.com/probonopd/linuxdeployqt/releases/download/1/linuxdeployqt-1-x86_64.AppImage
 chmod a+x linuxdeployqt-1-x86_64.AppImage
 
 cd /<%= name %>.AppDir
+
+# Create AppRun
+cat > AppRun << EOF
+#!/bin/bash
+
+DIR="\`dirname \"\$0\"\`"
+DIR="\`( cd \"\$DIR\" && pwd )\`"
+export APPDIR=\$DIR
+
+export LD_PRELOAD=\$DIR/exec_wrapper.so
+
+export APPIMAGE_ORIGINAL_QML2_IMPORT_PATH=\$QML2_IMPORT_PATH
+export APPIMAGE_ORIGINAL_LD_LIBRARY_PATH=\$LD_LIBRARY_PATH
+export APPIMAGE_ORIGINAL_QT_PLUGIN_PATH=\$QT_PLUGIN_PATH
+export APPIMAGE_ORIGINAL_XDG_DATA_DIRS=\$XDG_DATA_DIRS
+export APPIMAGE_ORIGINAL_PATH=\$PATH
+
+export QML2_IMPORT_PATH=\$DIR/usr/lib/qml:\$QML2_IMPORT_PATH
+export QT_PLUGIN_PATH=\$DIR/usr/lib/qt5/plugins/
+export LD_LIBRARY_PATH=\$QT_PLUGIN_PATH:\$DIR/usr/lib/:\$LD_LIBRARY_PATH
+export XDG_DATA_DIRS=\$DIR/usr/share/:\$XDG_DATA_DIRS
+export PATH=\$DIR/usr/bin:\$PATH
+export KDE_FORK_SLAVES=1
+
+export APPIMAGE_STARTUP_QML2_IMPORT_PATH=\$QML2_IMPORT_PATH
+export APPIMAGE_STARTUP_LD_LIBRARY_PATH=\$LD_LIBRARY_PATH
+export APPIMAGE_STARTUP_QT_PLUGIN_PATH=\$QT_PLUGIN_PATH
+export APPIMAGE_STARTUP_XDG_DATA_DIRS=\$XDG_DATA_DIRS
+export APPIMAGE_STARTUP_PATH=\$PATH
+
+<%= name %> \$@
+EOF
+chmod +x AppRun
+
 mkdir -p ./usr/bin; mv /app/usr/bin/* $_
-mkdir -p ./usr/lib; mv /app/usr/lib/* $_
 cp /app/usr/share/applications/*<%= name %>*.desktop <%= name %>.desktop
 mkdir -p ./usr/share/applications/; mv /app/usr/share/applications/*<%= name %>*.desktop $_
 cp /app/usr/share/icons/hicolor/scalable/apps/*<%= name %>* .
-mkdir -p ./usr/share/icons/hicolor/scalable/apps; mv /app/usr/share/icons/hicolor/scalable/apps/*<%= name %>* $_
+mkdir -p ./usr/share/icons/hicolor; mv /app/usr/share/icons/hicolor $_
 
 #KDE files
+mkdir -p ./usr/lib/; mv /app/usr/lib/* $_
 mkdir -p ./usr/share/kservices5; mv /app/usr/share/kservices5/* $_
 mkdir -p ./usr/share/kservicetypes5; mv /app/usr/share/kservicetypes5/* $_
 mkdir -p ./usr/share/kxmlgui5; mv /app/usr/share/kxmlgui5/* $_
@@ -49,19 +91,32 @@ mkdir -p ./usr/share/mime/packages; mv /app/usr/share/mime/packages/* $_
 
 ../linuxdeployqt-1-x86_64.AppImage ./usr/bin/<%= name %> -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
 
-# For some reason qmlscanner did not catch Dialog, manually copy it in.
-mkdir -p ./usr/bin/qml/QtQuick/Dialogs; cp -rfv /opt/usr/qml/QtQuick/Dialogs/* $_
-
-ls -l
 glibc_needed
 patch_usr
 delete_blacklisted
-get_apprun
 get_desktopintegration <%= name %>
+
+#Cleanup
+# We don't bundle the developer stuff
+rm -rf usr/include || true
+rm -rf usr/lib/cmake || true
+rm -rf usr/lib/pkgconfig || true
+rm -rf usr/share/ECM/ || true
+rm -rf usr/share/gettext || true
+rm -rf usr/share/pkgconfig || true
+rm -rf usr/mkspecs/ || true
+rm -rf usr/gettext-* || true
+rm -rf usr/autoconf-* || true
+rm -rf usr/automake-* || true
+rm -rf usr/libtool-* || true
+find . -name '*.a' -exec rm {} \;
+
+strip -g $(find usr) || true
 
 # Until this repo stabilizes we will use the appimage.
 # Build AppImageKit
 
+cd /
 wget "https://github.com/probonopd/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
 chmod a+x appimagetool-x86_64.AppImage
 

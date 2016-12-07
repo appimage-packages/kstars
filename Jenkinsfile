@@ -24,15 +24,16 @@ node('linux') {
 
 
     currentBuild.result = "SUCCESS"
-    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '', numToKeepStr: '2')), pipelineTriggers([[$class: 'GitHubPushTrigger'], pollSCM('H/15 * * * *')])])
+    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '2')), disableConcurrentBuilds(), pipelineTriggers([[$class: 'GitHubPushTrigger'], pollSCM('H/15 * * * *')])])
 
     try {
 
         stage( 'Checkout' ) {
             checkout scm
             checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, \
-            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'appimage-template']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/appimage-packages/appimage-template']]])
-
+            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'appimage-template'],  [$class: 'IgnoreNotifyCommit']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/appimage-packages/appimage-template']]])
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, \
+            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kstars']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/kstars']]])
        }
         stage( 'Setup' ) {
             sh 'bundle install'
