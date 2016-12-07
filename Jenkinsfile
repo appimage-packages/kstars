@@ -31,7 +31,8 @@ node('linux') {
         stage( 'Checkout' ) {
             checkout scm
             checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], \
-            browser: [$class: 'GithubWeb', repoUrl: ''], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], \
+            browser: [$class: 'GithubWeb', repoUrl: ''], doGenerateSubmoduleConfigurations: false, \
+            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'appimage-template']], submoduleCfg: [], \
             userRemoteConfigs: [[url: 'https://github.com/appimage-packages/appimage-template']]]
             checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, \
             extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kstars']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/kstars']]])
