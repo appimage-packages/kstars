@@ -78,7 +78,13 @@ packages:
   - bison
   - libxslt1-dev
   #app specifc
-  - libindi-dev
+  - libnova-dev
+  - libcfitsio3-dev
+  - libusb-1.0-0-dev
+  - zlib1g-dev
+  - libgsl0-dev
+  - libjpeg-dev
+  - libcurl4-gnutls-dev
   - libeigen3-dev
 frameworks:
   build_kf5: true
@@ -130,3 +136,11 @@ dependencies:
       source:
         type: none
         url: ''
+  - libindi:
+      build:
+        buildsystem: cmake
+        buildoptions: ''
+      depname: libindi
+      source:
+        type: git
+        url: 'https://github.com/indilib/indi.git'
