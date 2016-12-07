@@ -33,6 +33,7 @@ cd /app/src/appimage-exec-wrapper/
 make clean
 make
 cp -v exec.so /<%= name %>.AppDir/exec_wrapper.so
+rm -rfv  /app/src/appimage-exec-wrapper
 
 cd /
 wget https://github.com/probonopd/linuxdeployqt/releases/download/1/linuxdeployqt-1-x86_64.AppImage
