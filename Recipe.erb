@@ -78,7 +78,7 @@ cp /app/usr/share/applications/*<%= name %>*.desktop <%= name %>.desktop
 cp /app/usr/share/icons/hicolor/scalable/apps/*<%= name %>* .
 
 #Move everything except libs into AppDir
-mv /app/usr/{bin,share} ./usr/
+mkdir ./usr; mv /app/usr/{bin,share} ./usr/
 mkdir ./etc; mv /app/etc $_
 mkdir ./usr/lib/x86_64-linux-gnu/plugins; mv /app/usr/lib/x86_64-linux-gnu/plugins $_
 
