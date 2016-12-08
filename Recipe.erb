@@ -80,7 +80,7 @@ cp /app/usr/share/icons/hicolor/scalable/apps/*<%= name %>* .
 #Move everything except libs into AppDir
 mkdir ./usr; mv /app/usr/{bin,share} ./usr/
 mkdir ./etc; mv /app/etc $_
-mkdir ./usr/lib/x86_64-linux-gnu/plugins; mv /app/usr/lib/x86_64-linux-gnu/plugins $_
+mkdir -p ./usr/lib/x86_64-linux-gnu/plugins; mv /app/usr/lib/x86_64-linux-gnu/plugins $_
 
 ../linuxdeployqt-1-x86_64.AppImage ./usr/bin/<%= name %> -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml -libpath=./usr/lib
 
