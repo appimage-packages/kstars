@@ -138,9 +138,9 @@ dependencies:
         url: ''
   - libindi:
       build:
-        buildsystem: cmake
-        buildoptions: ''
+        buildsystem: custom
+        buildoptions: 'cd libindi && cmake "-DCMAKE_INSTALL_PREFIX=/app/usr -DBUILD_TESTING=OFF"'
       depname: indi
       source:
         type: git
-        url: 'https://github.com/indilib/indi.git'
+        url: 'https://github.com/indilib/indi'
