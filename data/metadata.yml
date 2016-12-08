@@ -140,7 +140,7 @@ dependencies:
       build:
         buildsystem: cmake
         buildoptions: ''
-      depname: libindi
+      depname: indi
       source:
         type: git
         url: 'https://github.com/indilib/indi.git'
