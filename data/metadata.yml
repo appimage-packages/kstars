@@ -89,7 +89,7 @@ packages:
 frameworks:
   build_kf5: true
   frameworks:
-      - extra-cmake-modules
+    - extra-cmake-modules
     - kcoreaddons
     - ki18n
     - kitemviews
