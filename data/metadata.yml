@@ -89,11 +89,12 @@ packages:
 frameworks:
   build_kf5: true
   frameworks:
-    - extra-cmake-modules
+      - extra-cmake-modules
     - kcoreaddons
     - ki18n
     - kitemviews
     - kconfig
+    - polkit-qt-1
     - kauth
     - kcodecs
     - karchive
@@ -110,19 +111,21 @@ frameworks:
     - sonnet
     - ktextwidgets
     - kglobalaccel
+    - attica
     - kxmlgui
     - solid
     - kbookmarks
     - kjobwidgets
-    - kio
     - phonon
+    - phonon-gstreamer
     - knotifications
+    - gpgmepp
     - kwallet
-    - kparts
-    - kpty
-    - attica
+    - kio
     - knewstuff
-    - kplotting
+    - breeze-icons
+    - kactivities
+    - plasma-framework
 type: git
 url: http://anongit.kde.org/kstars
 buildsystem: cmake
