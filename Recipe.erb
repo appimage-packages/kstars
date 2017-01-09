@@ -27,12 +27,6 @@ rm -f functions.sh
 
 mkdir /<%= name %>.AppDir/
 
-cd /app/src
-git clone git://anongit.kde.org/scratch/brauch/appimage-exec-wrapper
-cd /app/src/appimage-exec-wrapper/
-make clean
-make
-cp -v exec.so /<%= name %>.AppDir/exec_wrapper.so
 
 
 cd /
@@ -41,81 +35,119 @@ chmod a+x linuxdeployqt-1-x86_64.AppImage
 
 cd /<%= name %>.AppDir
 
-# Create AppRun
-cat > AppRun << EOF
-#!/bin/bash
+#Move binary/desktop/icon into AppDir
+mv /opt/usr/bin/<%= name %> .
+mv /opt/usr/share/applications/*<%= name %>*.desktop <%= name %>.desktop
+cp /opt/usr/share/icons/hicolor/48x48/apps/*<%= name %>* .
 
-DIR="\`dirname \"\$0\"\`"
-DIR="\`( cd \"\$DIR\" && pwd )\`"
-export APPDIR=\$DIR
 
-export LD_PRELOAD=\$DIR/exec_wrapper.so
+#All the plugins do not seem to be getting in. Manual copy.
+mkdir -p ./plugins; cp -rfv /opt/usr/lib/qt5/plugins/phonon4qt5_backend $_
+cp -rfv /opt/usr/plugins/<%= name %> ./plugins || true
+#mkdir -p ./usr/lib/qml/
+mkdir -p ./usr/{share,bin,lib}
+mkdir ./etc
+rsync -aruxv --progress /opt/usr/plugins/kf5/ ./plugins/
+rsync -aruxv --progress /opt/usr/share/ ./usr/share/
+rsync -aruxv --progress /opt/etc/ ./etc/
+rsync -aruxv --progress /opt/usr/qml/ ./qml
+cp /usr/lib/x86_64-linux-gnu/pulseaudio/*.so* ./usr/lib/
 
-export APPIMAGE_ORIGINAL_QML2_IMPORT_PATH=\$QML2_IMPORT_PATH
-export APPIMAGE_ORIGINAL_LD_LIBRARY_PATH=\$LD_LIBRARY_PATH
-export APPIMAGE_ORIGINAL_QT_PLUGIN_PATH=\$QT_PLUGIN_PATH
-export APPIMAGE_ORIGINAL_XDG_DATA_DIRS=\$XDG_DATA_DIRS
-export APPIMAGE_ORIGINAL_PATH=\$PATH
+cp /opt/usr/bin/gst* ./usr/bin/
+mkdir ./lib
+rm -rfv /opt/usr/lib/gstreamer-1.0/include
+cp /opt/usr/lib/gstreamer-1.0/* ./lib/
+cp /usr/lib/x86_64-linux-gnu/pulseaudio/*.so* ./lib/
+cp -rfv /usr/share/mime ./usr/share/
+cp /etc/mime.types ./etc/
+update-mime-database ./usr/share/mime
 
-export QML2_IMPORT_PATH=\$DIR/usr/lib/qml:\$QML2_IMPORT_PATH
-export QT_PLUGIN_PATH=\$DIR/usr/lib/qt5/plugins/
-export LD_LIBRARY_PATH=\$QT_PLUGIN_PATH:\$DIR/usr/lib/:\$LD_LIBRARY_PATH
-export XDG_DATA_DIRS=\$DIR/usr/share/:\$XDG_DATA_DIRS
-export PATH=\$DIR/usr/bin:\$PATH
-export KDE_FORK_SLAVES=1
+strip -g $(find usr/bin) || true
+strip -g $(find usr/lib) || true
 
-export APPIMAGE_STARTUP_QML2_IMPORT_PATH=\$QML2_IMPORT_PATH
-export APPIMAGE_STARTUP_LD_LIBRARY_PATH=\$LD_LIBRARY_PATH
-export APPIMAGE_STARTUP_QT_PLUGIN_PATH=\$QT_PLUGIN_PATH
-export APPIMAGE_STARTUP_XDG_DATA_DIRS=\$XDG_DATA_DIRS
-export APPIMAGE_STARTUP_PATH=\$PATH
-
-<%= name %> \$@
-EOF
-chmod +x AppRun
-
-cp /app/usr/share/applications/*<%= name %>*.desktop <%= name %>.desktop
-cp /app/usr/share/icons/hicolor/scalable/apps/*<%= name %>* .
-
-#Move everything except libs into AppDir
-mkdir ./usr; mv /app/usr/{bin,share} ./usr/
-mkdir ./etc; mv /app/etc $_
-mkdir -p ./usr/lib/x86_64-linux-gnu/plugins; mv /app/usr/lib/x86_64-linux-gnu/plugins $_
-
-../linuxdeployqt-1-x86_64.AppImage ./usr/bin/<%= name %> -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml -libpath=./usr/lib
-
-glibc_needed
+mv /opt/usr/libexec/kf5/* ./usr/bin/ || true
+mv /opt/usr/libexec/gstreamer-1.0/* ./usr/bin || true
+cp -rfv /opt/usr/lib/x86_64-linux-gnu/* /opt/usr/lib/
+unset LD_LIBRARY_PATH
+../linuxdeployqt-1-x86_64.AppImage <%= name %> -verbose=3 -bundle-non-qt-libs -qmldir=/opt/usr/qml
 patch_usr
+glibc_needed
 delete_blacklisted
-get_desktopintegration <%= name %>
-
 #Cleanup
 # We don't bundle the developer stuff
-rm -rf usr/include || true
-rm -rf usr/lib/cmake || true
-rm -rf usr/lib/pkgconfig || true
-rm -rf usr/share/ECM/ || true
-rm -rf usr/share/gettext || true
-rm -rf usr/share/pkgconfig || true
-rm -rf usr/mkspecs/ || true
-rm -rf usr/gettext-* || true
-rm -rf usr/autoconf-* || true
-rm -rf usr/automake-* || true
-rm -rf usr/libtool-* || true
+rm -rf ./usr/include || true
+rm -rf ./usr/lib/cmake || true
+rm -rf ./lib/cmake || true
+rm -rf ./usr/lib/pkgconfig || true
+rm -rf ./usr/share/ECM/ || true
+rm -rf ./usr/share/gettext || true
+rm -rf ./usr/share/pkgconfig || true
+rm -rf ./usr/mkspecs/ || true
+rm -rf ./usr/gettext-* || true
+rm -rf ./usr/autoconf-* || true
+rm -rf ./usr/automake-* || true
+rm -rf ./usr/libtool-* || true
+rm -rf ./libexec || true
+rm -rf ./usr/share/cmake-3.7 || true
+rm -rf ./usr/share/man || true
+rm -rf ./usr/share/doc/ECM || true
+rm -rf ./usr/share/doc/libdbusmenu-qt5-doc || true
+rm -rf ./usr/share/gtk-doc || true
+rm -rf ./usr/share/aclocal || true
+#74MB!!! hope it can run without...
+rm ./lib/libgstlibav.so || true
+
+# Many assets are not needed... especially not twice (icons are rcc packaged)
+rm -rf usr/share/icons/breeze/{places,mimetypes,devices,apps,applets,actions,status,emotes,emblems}
+rm -rf usr/share/icons/breeze-dark/{places,mimetypes,devices,apps,applets,actions,status,emotes,emblems}
+
 find . -name '*.a' -exec rm {} \;
+get_desktopintegration <%= name %>
+cd /app/src
+git clone git://anongit.kde.org/scratch/brauch/appimage-exec-wrapper
+cd /app/src/appimage-exec-wrapper/
+make clean
+make
+cp -v exec.so /<%= name %>.AppDir/exec_wrapper.so
+rm -rfv  /app/src/appimage-exec-wrapper
+cd /<%= name %>.AppDir
+rm AppRun
+#Create AppRun
+cat > AppRun << EOF
+#!/bin/sh
+DIR="\`dirname \"\$0\"\`"
+HERE="\`( cd \"\$DIR\" && pwd )\`"
+export LD_PRELOAD=\$HERE/exec_wrapper.so
+export QML2_IMPORT_PATH=\$HERE/qml
+export QT_PLUGIN_PATH=\$HERE/plugins
+export PATH=\$HERE/usr/bin/:\$HERE/usr/sbin/:\$HERE/usr/games/:\$HERE/bin/:\$HERE/sbin/:\$PATH
+export LD_LIBRARY_PATH=\$HERE/usr/lib/:\$HERE/usr/lib/x86_64-linux-gnu/:\$HERE/usr/lib64/:\$HERE/lib/:\$HERE/lib/x86_64-linux-gnu/:\$HERE/lib64/:\$LD_LIBRARY_PATH
+export XDG_DATA_DIRS=\$HERE/usr/share:\$HOME/.local/share:/usr/local/share:/usr/share:\$XDG_DATA_DIRS
+export XDG_DATA_HOME=\$HOME/.local/share
+export XDG_CONFIG_DIRS=\$HERE/etc/xdg:\$XDG_CONFIG_DIRS
+export KDE_FORK_SLAVES=1
+export GST_PLUGIN_PATH=\$HERE/lib
+export GST_PLUGIN_SCANNER=\$HERE/bin
 
-strip -g $(find usr) || true
-
-# Until this repo stabilizes we will use the appimage.
-# Build AppImageKit
-
+<%= name %> $@
+EOF
+chmod +x AppRun
+mv <%= name %> ./usr/bin/
+cp <%= name %>.desktop ./usr/share/applications/
 cd /
-wget "https://github.com/probonopd/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+wget "https://github.com/probonopd/AppImageKit/releases/download/knowngood/appimagetool-x86_64.AppImage"
 chmod a+x appimagetool-x86_64.AppImage
 
 ARCH=$(arch)
 DATE=$(date +"%m%d%Y")
 
-APPIMAGEFILENAME="<%= name %>-git$DATE-$ARCH.AppImage"
+APPIMAGEFILENAME="<%= name %>-no-data-git$DATE-$ARCH.AppImage"
 
 ./appimagetool-x86_64.AppImage /<%= name %>.AppDir /appimage/$APPIMAGEFILENAME
+<!-- # Artikulate has a data repo..
+git clone https://github.com/KDE/artikulate-data
+mv artikulate-data/*  /<%= name %>.AppDir/usr/share/artikulate/
+
+APPIMAGEFILENAME="<%= name %>-with-data-git$DATE-$ARCH.AppImage"
+
+./appimagetool-x86_64.AppImage /<%= name %>.AppDir /appimage/$APPIMAGEFILENAME -->

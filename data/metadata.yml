@@ -126,7 +126,7 @@ frameworks:
 type: git
 url: http://anongit.kde.org/kstars
 buildsystem: cmake
-buildoptions: "-DCMAKE_INSTALL_PREFIX=/app/usr -DBUILD_TESTING=OFF"
+buildoptions: "-DCMAKE_INSTALL_PREFIX=/opt/usr -DBUILD_TESTING=OFF"
 dependencies:
   - cpan:
       build:
@@ -139,7 +139,7 @@ dependencies:
   - libindi:
       build:
         buildsystem: custom
-        buildoptions: 'cd libindi && cmake "-DCMAKE_INSTALL_PREFIX=/app/usr -DBUILD_TESTING=OFF"'
+        buildoptions: 'cd libindi && cmake "-DCMAKE_INSTALL_PREFIX=/opt/usr -DBUILD_TESTING=OFF"'
       depname: indi
       source:
         type: git
