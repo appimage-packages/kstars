@@ -125,6 +125,8 @@ frameworks:
     - knewstuff
     - breeze-icons
     - kactivities
+    - kdeclarative
+    - kplotting
     - plasma-framework
 type: git
 url: http://anongit.kde.org/kstars
