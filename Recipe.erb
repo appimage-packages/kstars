@@ -141,13 +141,6 @@ chmod a+x appimagetool-x86_64.AppImage
 ARCH=$(arch)
 DATE=$(date +"%m%d%Y")
 
-APPIMAGEFILENAME="<%= name %>git$DATE-$ARCH.AppImage"
+APPIMAGEFILENAME="<%= name %>-git$DATE-$ARCH.AppImage"
 
 ./appimagetool-x86_64.AppImage /<%= name %>.AppDir /appimage/$APPIMAGEFILENAME
-# Artikulate has a data repo..
-#git clone https://github.com/KDE/artikulate-data
-#mv artikulate-data/*  /<%= name %>.AppDir/usr/share/artikulate/
-
-#APPIMAGEFILENAME="<%= name %>-with-data-git$DATE-$ARCH.AppImage"
-
-./appimagetool-x86_64.AppImage /<%= name %>.AppDir /appimage/$APPIMAGEFILENAME -->
