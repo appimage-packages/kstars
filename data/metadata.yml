@@ -86,6 +86,7 @@ packages:
   - libjpeg-dev
   - libcurl4-gnutls-dev
   - libeigen3-dev
+  - xplanet
 frameworks:
   build_kf5: true
   frameworks:
