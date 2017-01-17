@@ -35,7 +35,7 @@ node('linux') {
             extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'appimage-template']], submoduleCfg: [], \
             userRemoteConfigs: [[url: 'https://github.com/appimage-packages/appimage-template']]]
             checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, \
-            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kstars']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/kstars']]])
+            extensions: [[$class: 'CleanBeforeCheckout'],[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kstars']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/kstars']]])
        }
         stage( 'Setup' ) {
             sh 'bundle install'
