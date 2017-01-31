@@ -1,6 +1,6 @@
 #kstars
 
-[![Build Status](http://aci.pangea.pub/job/pipeline-kstars-appimage/job/master/badge/icon)](http://aci.pangea.pub/job/pipeline-kstars-appimage/job/master/)
+[![Build Status](http://aci.pangea.pub/job/kstars-appimage/job/master/badge/icon)](http://aci.pangea.pub/job/kstars-appimage/job/master/)
 
 KDE Kstars appimage
 
