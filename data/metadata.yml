@@ -1,4 +1,5 @@
 name: kstars
+binary: kstars
 packages:
   - build-essential
   #app specifc
